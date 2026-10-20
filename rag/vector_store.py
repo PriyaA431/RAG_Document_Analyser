@@ -31,9 +31,14 @@ class VectorStore:
 
         print(f"Stored {len(chunks)} chunks in ChromaDB.")
 
-    def search(self, query_embedding, top_k=3):
+    def search(self, query_embedding, top_k=5):
+        count = self.collection.count()
+
+        if count == 0:
+            return {"documents": [[]], "metadatas": [[]], "distances": [[]]}
+
         return self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=min(top_k, self.collection.count()),
+            n_results=min(top_k, count),
             include=["documents", "metadatas", "distances"]
         )
